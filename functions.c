@@ -40,3 +40,17 @@ char **get_tokens(char *str_line)
 	array[tok_count] = NULL;/* last index of args */
 	return (array); /* sending array, args in main receives it */
 }
+
+/**
+ * free_array - free the args array
+ * @args : array from get tokens, tokenization of str_line
+ */
+
+void free_array(char **args)
+{
+	int i = 0;
+
+	for (i = 0; args[i] != NULL; i++) /* free the array & indxs */
+		free(args[i]);
+	free(args);
+}

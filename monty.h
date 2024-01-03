@@ -32,4 +32,6 @@ char *opcode;
 void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
+char **get_tokens(char *str_line);
+void free_array(char **args);
 #endif /* MONTY_H */
