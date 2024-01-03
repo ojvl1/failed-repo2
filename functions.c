@@ -3,8 +3,8 @@
 
 /**
  * get_tokens - tokenizes str_line, stores it in array
- * @str_line: string from main, from stdin
- * Return: pointer of array
+* @str_line: string from main, from stdin
+* Return: pointer of array
  */
 
 char **get_tokens(char *str_line)
@@ -53,4 +53,57 @@ void free_array(char **args)
 	for (i = 0; args[i] != NULL; i++) /* free the array & indxs */
 		free(args[i]);
 	free(args);
+}
+
+/**
+ * add_dnodeint- Add to the start a Dlinked node
+ *
+ * @n: int from struct
+ * @head: pointer to nodes or null
+ * Return: Adress of new node
+ */
+void push(stack_t **head, unsigned int line_number, char **args)
+{
+	int copy_n;
+	(void)line_number;
+	stack_t *new_node;
+	if (args[1] == NULL)
+		return;
+	
+	copy_n = atoi(args[1]);
+	new_node = malloc(sizeof(stack_t));
+	if (new_node == NULL)
+	{
+		printf(" Memory failed to allocate\n");
+		return;
+	}
+
+	new_node->n = copy_n;
+	new_node->next = *head;
+	new_node->prev = NULL; /* new node always prev = null */
+
+	if (*head != NULL) /* list not empty, old node must change ->prev */
+		(*head)->prev = new_node; /* change prev from old node */
+
+	*head = new_node; /* move head to new node */
+	printf("new_node = %d\n", new_node->n);
+}
+
+/**
+ *free_dlistint- free previous list int
+ *
+ *@head: head pointer of nodes
+ */
+
+void free_dlist(stack_t **head)
+{
+
+	stack_t *temp;
+
+	while (*head != NULL)
+	{
+		temp = *head;
+		*head = (*head)->next;
+		free(temp);
+	}
 }

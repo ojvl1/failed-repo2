@@ -29,9 +29,11 @@ struct stack_s *next;
 typedef struct instruction_s
 {
 char *opcode;
-void (*f)(stack_t **stack, unsigned int line_number);
+void (*f)(stack_t **stack, unsigned int line_number, char **args);
 } instruction_t;
 
 char **get_tokens(char *str_line);
 void free_array(char **args);
+void push(stack_t **head, unsigned int line_number, char **args);
+void free_dlist(stack_t **head);
 #endif /* MONTY_H */
