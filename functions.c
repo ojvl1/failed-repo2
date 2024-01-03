@@ -2,9 +2,39 @@
 #include "monty.h"
 
 /**
+ *pall - function that prints the stack
+ *@stack: stack structure
+ *@line_number: number of instruction
+ */
+
+void pall(stack_t **stack, unsigned int line_number, char **args, char *line, FILE *file)
+{
+	(void)line_number;
+	(void)args;
+	(void)line;
+	(void)file;
+
+	stack_t *temp = NULL;
+	int n = 0;
+
+	if (*stack == NULL)
+		return;
+
+	temp = *stack;
+
+	while (temp)
+	{
+		n = temp->n;
+		printf("%d\n", n);
+		temp = temp->next;
+	}
+}
+
+
+/**
  * get_tokens - tokenizes str_line, stores it in array
-* @str_line: string from main, from stdin
-* Return: pointer of array
+ * @str_line: string from main, from stdin
+ * Return: pointer of array
  */
 
 char **get_tokens(char *str_line)
@@ -41,11 +71,6 @@ char **get_tokens(char *str_line)
 	return (array); /* sending array, args in main receives it */
 }
 
-/**
- * free_array - free the args array
- * @args : array from get tokens, tokenization of str_line
- */
-
 void free_array(char **args)
 {
 	int i = 0;
@@ -62,31 +87,59 @@ void free_array(char **args)
  * @head: pointer to nodes or null
  * Return: Adress of new node
  */
-void push(stack_t **head, unsigned int line_number, char **args)
+void push(stack_t **stack, unsigned int line_number, char **args, char *line, FILE *file)
 {
-	int copy_n;
-	(void)line_number;
+	int copy_n, i;
 	stack_t *new_node;
 	if (args[1] == NULL)
-		return;
-	
+	{
+		fprintf(stderr, "L%u: usage: push integer\n", line_number);
+		free(line);
+		fclose(file);
+		if (*stack != NULL)
+			free_dlist(stack);
+		free(stack);
+		free_array(args);
+		exit(EXIT_FAILURE);
+	}
+	for (i = 0; args[1][i]; i++)
+	{
+		if (!isdigit(args[1][i]))
+		{
+			fprintf(stderr, "L%u: usage: push integer\n", line_number);
+			free(line);
+			fclose(file);
+			if (*stack != NULL) /* in case of empty dlist */
+				free_dlist(stack);
+			free(stack);
+			free_array(args);
+			exit(EXIT_FAILURE);
+		}
+	}
+
 	copy_n = atoi(args[1]);
 	new_node = malloc(sizeof(stack_t));
 	if (new_node == NULL)
 	{
-		printf(" Memory failed to allocate\n");
+		fprintf(stderr, "Error: malloc failed\n");
+		free(line);
+		fclose(file);
+		if (*stack != NULL) /* in case of empty dlist */
+			free_dlist(stack);
+		free(stack);
+		free_array(args);
+		exit(EXIT_FAILURE);
 		return;
 	}
 
 	new_node->n = copy_n;
-	new_node->next = *head;
+	new_node->next = *stack;
 	new_node->prev = NULL; /* new node always prev = null */
 
-	if (*head != NULL) /* list not empty, old node must change ->prev */
-		(*head)->prev = new_node; /* change prev from old node */
+	if (*stack != NULL) /* list not empty, old node must change ->prev */
+		(*stack)->prev = new_node; /* change prev from old node */
 
-	*head = new_node; /* move head to new node */
-	printf("new_node = %d\n", new_node->n);
+	*stack = new_node; /* move head to new node */
 }
 
 /**

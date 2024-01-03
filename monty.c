@@ -44,6 +44,7 @@ int main(int argc, char **argv)
 
 	instruction_t instructions[] = {
 		{"push", push},
+		{"pall", pall},
 		{NULL, NULL}
 	};
 
@@ -76,8 +77,7 @@ int main(int argc, char **argv)
 		{
 			if (strcmp(instructions[i].opcode, args[0]) == 0) /* Matched a case */
 			{
-				printf("Matched line %d\n", line_number);
-				instructions[i].f(stack, line_number, args);
+				instructions[i].f(stack, line_number, args, line, file);
 				break;
 			}
 		}

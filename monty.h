@@ -2,6 +2,7 @@
 #define MONTY_H
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
  * @n: integer
@@ -29,11 +30,12 @@ struct stack_s *next;
 typedef struct instruction_s
 {
 char *opcode;
-void (*f)(stack_t **stack, unsigned int line_number, char **args);
+void (*f)(stack_t **stack, unsigned int line_number, char **args, char *line, FILE *file);
 } instruction_t;
 
 char **get_tokens(char *str_line);
 void free_array(char **args);
-void push(stack_t **head, unsigned int line_number, char **args);
+void push(stack_t **stack, unsigned int line_number, char **args, char *line, FILE *file);
+void pall(stack_t **stack, unsigned int line_number, char **args, char *line, FILE *file);
 void free_dlist(stack_t **head);
 #endif /* MONTY_H */
