@@ -1,35 +1,22 @@
 #include <stdio.h>
 #include "monty.h"
 
+
 /**
- *pall - function that prints the stack
- *@stack: stack structure
- *@line_number: number of instruction
+ * clean_up - free and close items used
+ * @line: line from getline file
+ * @stack: head of stack_t
+ * @file: monty.m file
  */
 
-void pall(stack_t **stack, unsigned int line_number, char **args, char *line, FILE *file)
+void clean_up(char *line, stack_t **stack, FILE *file)
 {
-	(void)line_number;
-	(void)args;
-	(void)line;
-	(void)file;
-
-	stack_t *temp = NULL;
-	int n = 0;
-
-	if (*stack == NULL)
-		return;
-
-	temp = *stack;
-
-	while (temp)
-	{
-		n = temp->n;
-		printf("%d\n", n);
-		temp = temp->next;
-	}
+	free(line);
+	if (*stack != NULL)
+		free_dlist(stack);
+	free(stack);
+	fclose(file);
 }
-
 
 /**
  * get_tokens - tokenizes str_line, stores it in array
@@ -71,6 +58,11 @@ char **get_tokens(char *str_line)
 	return (array); /* sending array, args in main receives it */
 }
 
+/**
+ * free_array - free **array
+ * @args: array char **
+ */
+
 void free_array(char **args)
 {
 	int i = 0;
@@ -81,69 +73,7 @@ void free_array(char **args)
 }
 
 /**
- * add_dnodeint- Add to the start a Dlinked node
- *
- * @n: int from struct
- * @head: pointer to nodes or null
- * Return: Adress of new node
- */
-void push(stack_t **stack, unsigned int line_number, char **args, char *line, FILE *file)
-{
-	int copy_n, i;
-	stack_t *new_node;
-	if (args[1] == NULL)
-	{
-		fprintf(stderr, "L%u: usage: push integer\n", line_number);
-		free(line);
-		fclose(file);
-		if (*stack != NULL)
-			free_dlist(stack);
-		free(stack);
-		free_array(args);
-		exit(EXIT_FAILURE);
-	}
-	for (i = 0; args[1][i]; i++)
-	{
-		if (!isdigit(args[1][i]))
-		{
-			fprintf(stderr, "L%u: usage: push integer\n", line_number);
-			free(line);
-			fclose(file);
-			if (*stack != NULL) /* in case of empty dlist */
-				free_dlist(stack);
-			free(stack);
-			free_array(args);
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	copy_n = atoi(args[1]);
-	new_node = malloc(sizeof(stack_t));
-	if (new_node == NULL)
-	{
-		fprintf(stderr, "Error: malloc failed\n");
-		free(line);
-		fclose(file);
-		if (*stack != NULL) /* in case of empty dlist */
-			free_dlist(stack);
-		free(stack);
-		free_array(args);
-		exit(EXIT_FAILURE);
-		return;
-	}
-
-	new_node->n = copy_n;
-	new_node->next = *stack;
-	new_node->prev = NULL; /* new node always prev = null */
-
-	if (*stack != NULL) /* list not empty, old node must change ->prev */
-		(*stack)->prev = new_node; /* change prev from old node */
-
-	*stack = new_node; /* move head to new node */
-}
-
-/**
- *free_dlistint- free previous list int
+ * free_dlist- free previous list int
  *
  *@head: head pointer of nodes
  */
