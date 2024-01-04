@@ -21,7 +21,7 @@ int white_spaces(char **args, unsigned int line_number)
  */
 void arg_validation(void)
 {
-	printf("USAGE: monty bytecodes/001.m\n");
+	printf("USAGE: monty file\n");
 	exit(EXIT_FAILURE); }
 
 	/**
